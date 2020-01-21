@@ -24,8 +24,8 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
 
     @NonNull
     @Override
-    public PokemonAdapter.PokemonViewHolder onCreateViewHolder(@NonNull ViewGroup
-                                                                       parent, int viewType) {
+    public PokemonAdapter.PokemonViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                               int viewType) {
         View itemView =
                 LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pokemon,
                         parent, false);
@@ -78,6 +78,10 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
         private ImageView ivBorrar;
         //guardamos el pokemon
         private Pokemon pokemon;
+
+        public Pokemon getPokemon() {
+            return pokemon;
+        }
 
         public PokemonViewHolder(@NonNull final View itemView) {
             super(itemView);

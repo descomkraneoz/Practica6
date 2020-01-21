@@ -1,20 +1,19 @@
 package net.iessochoa.manuelmartinez.practica6.ui;
 
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import net.iessochoa.manuelmartinez.practica6.R;
 import net.iessochoa.manuelmartinez.practica6.adapters.PokemonAdapter;
@@ -24,6 +23,8 @@ import net.iessochoa.manuelmartinez.practica6.viewmodels.PokemonViewModel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import static net.iessochoa.manuelmartinez.practica6.utils.Utils.definirFormatoReciclerView;
 
 public class MainActivity extends AppCompatActivity {
     private PokemonViewModel pokemonViewModel;
@@ -39,12 +40,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         //RECYCLER_VIEW
         rvListaPokemon = findViewById(R.id.rvListaPokemon);
         //creamos el adaptador
         adapter = new PokemonAdapter();
         rvListaPokemon.setAdapter(adapter);
-        rvListaPokemon.setLayoutManager(new LinearLayoutManager(this));
+        //rvListaPokemon.setLayoutManager(new LinearLayoutManager(this));
+        definirFormatoReciclerView(this, rvListaPokemon);
+        definirEventoSwiper();
 
         //VIEW_MODEL
         //Recuperamos el ViewModel
@@ -142,4 +146,29 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private void definirEventoSwiper() {
+        //Creamos el Evento de Swiper
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT |
+                ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView,
+                                  RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                //realizamos un cast del viewHolder y obtenemos el pokemon a borrar
+                Pokemon
+                        pokemonDelete = ((PokemonAdapter.PokemonViewHolder) viewHolder).getPokemon();
+                pokemonViewModel.delete(pokemonDelete);
+            }
+        };
+//Creamos el objeto de ItemTouchHelper que se encargará del trabajo
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+//lo asociamos a nuestro reciclerView
+        itemTouchHelper.attachToRecyclerView(rvListaPokemon);
+    }
+
 }
