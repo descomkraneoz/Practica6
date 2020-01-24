@@ -139,10 +139,6 @@ public class PokemonRepository {
      *                pokemon(ejemplo: desde el pokemon 80 del servicio)
      */
     public void getListaSiguientePokemonApi(final int offset) {
-        //si no está abierto retrofit, es la primera vez, por lo que inicializamos variables
-        if (retrofit == null) {
-            iniciaRetrofit();
-        }
         //creamos la llamada al servicio con los siguientes 20 pokemon desde el indice offset
         Call<ListaPokemonApi> listaPokemonApiCall = servicioWebPokemon.getListaPokemon(limit, offset);
         //hacemos la llamada
@@ -210,6 +206,18 @@ public class PokemonRepository {
     }
 
     //************************FINAL WebService***************************************
+
+    public MutableLiveData<List<Pokemon>> getListaPokemonApiLiveData() {
+        //si no está abierto retrofit, es la primera vez, por lo que
+        //inicializamos variables como el repositorio tambien mantiene
+        // la base de datos, evitamos abrir retrofit si no lo pide
+        //el usuario. Si el acceso al servicio web es fundamental en la app se
+        //puede abrir retorofit en el constructor
+        if (retrofit == null) {
+            iniciaRetrofit();
+        }
+        return listaPokemonApiLiveData;
+    }
 
 
 }

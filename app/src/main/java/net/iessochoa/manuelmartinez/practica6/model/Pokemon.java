@@ -1,5 +1,7 @@
 package net.iessochoa.manuelmartinez.practica6.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 
 import androidx.annotation.NonNull;
@@ -14,7 +16,7 @@ import java.util.Locale;
 
 @Entity(tableName = Pokemon.TABLE_NAME,
         indices = {@Index(value = {Pokemon.NOMBRE},unique = true)})
-public class Pokemon{
+public class Pokemon implements Parcelable {
 
     /**
      *  constantes para ayudarnos a construir la tabla
@@ -58,6 +60,24 @@ public class Pokemon{
         //donde está la imagen
         this.uri = urlIMAGEN + id+ ".png";
         this.fechaCompra = fechaCompra;
+    }
+
+    public static final Creator<Pokemon> CREATOR = new Creator<Pokemon>() {
+        @Override
+        public Pokemon createFromParcel(Parcel in) {
+            return new Pokemon(in);
+        }
+
+        @Override
+        public Pokemon[] newArray(int size) {
+            return new Pokemon[size];
+        }
+    };
+
+    protected Pokemon(Parcel in) {
+        id = in.readInt();
+        nombre = in.readString();
+        uri = in.readString();
     }
 
     /**
@@ -111,6 +131,17 @@ public class Pokemon{
         return df.format(fechaCompra);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(nombre);
+        parcel.writeString(uri);
+    }
 }
 
 

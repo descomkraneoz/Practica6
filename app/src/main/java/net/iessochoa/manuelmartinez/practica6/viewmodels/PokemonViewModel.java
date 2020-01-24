@@ -23,6 +23,7 @@ public class PokemonViewModel extends AndroidViewModel {
         mAllPokemons = mRepository.getAllPokemons();
     }
 
+
     /**
      * métodos que nos permiten obtener la lista, borrar y añadir un pokemon
      */
@@ -39,4 +40,6 @@ public class PokemonViewModel extends AndroidViewModel {
     public void delete(Pokemon pokemon) {
         mRepository.delete(pokemon);
     }
+
+
 }

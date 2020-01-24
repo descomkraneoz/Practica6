@@ -1,10 +1,12 @@
 package net.iessochoa.manuelmartinez.practica6.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
@@ -13,7 +15,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import net.iessochoa.manuelmartinez.practica6.R;
 import net.iessochoa.manuelmartinez.practica6.adapters.PokemonAdapter;
@@ -27,11 +28,12 @@ import java.util.List;
 import static net.iessochoa.manuelmartinez.practica6.utils.Utils.definirFormatoReciclerView;
 
 public class MainActivity extends AppCompatActivity {
+    public static final int REQUEST_OPTION_NUEVO_POKEMON = 0;
+    private static final String STATUS_CODE_NUEVO_POKEMON = "net.iessochoa.manuelmartinez.practica6.ui.Nuevopokemon";
     private PokemonViewModel pokemonViewModel;
     private FloatingActionButton fabNuevo;
     private RecyclerView rvListaPokemon;
     private PokemonAdapter adapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +79,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabNuevo = findViewById(R.id.fabNuevo);
+        fabNuevo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                comprarPokemon(Pokemon p);
+
             }
         });
+    }
+
+    private void comprarPokemon(Pokemon pokemon) {
+        Intent intent = new Intent(MainActivity.this, NuevoPokemonActivity.class);
+        startActivityForResult(intent, REQUEST_OPTION_NUEVO_POKEMON);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_OPTION_NUEVO_POKEMON:
+                    Pokemon pokemon = data.getParcelableExtra(NuevoPokemonActivity.EXTRA_POKEMON);
+                    if (pokemon != null) {
+                        pokemonViewModel.insert(pokemon);
+                    }
+                    break;
+            }
+        }
     }
 
     @Override
